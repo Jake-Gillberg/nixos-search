@@ -2,8 +2,8 @@
   description = "Code behind search.nixos.org";
 
   nixConfig = {
-    extra-substituters = [ "https://nixos-search.cachix.org" ];
-    extra-trusted-public-keys = [ "nixos-search.cachix.org-1:1HV3YF8az4fywnH+pAd+CXFEdpTXtv9WpoivPi+H70o=" ];
+#    extra-substituters = [ "https://nixos-search.cachix.org" ];
+#    extra-trusted-public-keys = [ "nixos-search.cachix.org-1:1HV3YF8az4fywnH+pAd+CXFEdpTXtv9WpoivPi+H70o=" ];
   };
 
   inputs = {
@@ -24,7 +24,11 @@
       ])
       (system:
         let
-          pkgs = nixpkgs.legacyPackages.${system};
+          #pkgs = nixpkgs.legacyPackages.${system};
+          pkgs = import nixpkgs {
+            inherit system;
+            config = { allowUnfree = true; };
+          };
           warnToUpgradeNix = pkgs.lib.warn "Please upgrade Nix to 2.7 or later.";
         in rec {
 
@@ -38,6 +42,9 @@
               export RUST_SRC_PATH="${pkgs.rustPlatform.rustLibSrc}";
               export NIXPKGS_PANDOC_FILTERS_PATH="${packages.flake-info.NIXPKGS_PANDOC_FILTERS_PATH}";
             '';
+            nativeBuildInputs = [
+              #(import ./flake-info { inherit pkgs; })."elasticsearch-8.0.0-alpha.1"
+            ];
           };
 
           # XXX: for backwards compatibility

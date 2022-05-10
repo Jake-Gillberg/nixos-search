@@ -29,6 +29,7 @@ let
       }
       // lib.optionalAttrs (drv ? meta && drv.meta ? description) { inherit (drv.meta) description; }
       // lib.optionalAttrs (drv ? meta && drv.meta ? license) { inherit (drv.meta) license; }
+#      // lib.optionalAttrs (drv ? meta && drv.meta ? longDescription) { inherit (drv.meta) longDescription; }
     )
   ) (validPkgs drvs);
   readApps = system: apps: lib.mapAttrsToList (
@@ -146,5 +147,5 @@ rec {
   nixos-options = readOptions {
     module = import "${builtins.fetchTarball { url = flake; }}/nixos/modules/module-list.nix";
   };
-  all = packages ++ apps ++ options;
+  all = packages ++ legacyPackages ++ apps ++ options;
 }
